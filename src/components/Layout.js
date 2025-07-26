@@ -1,16 +1,18 @@
-import * as React from "react"
-import { Helmet } from "react-helmet"
-import Navbar from "./Navbar"
-import Footer from "./Footer"
-import useSiteMetadata from "./SiteMetadata"
-import { useScroll } from "../hooks/useScroll"
+import "../styles/global.css"; // Import global Tailwind styles
 
-const { NODE_ENV } = process.env
+import * as React from "react";
+import { Helmet } from "react-helmet";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import useSiteMetadata from "./SiteMetadata";
+import { useScroll } from "../hooks/useScroll";
+
+const { NODE_ENV } = process.env;
 
 const Layout = ({ children }) => {
   // set global title and description on global layout, can be overwritten on a per-page basis with MyHelmet
-  const { title, description } = useSiteMetadata()
-  const { scrollY, scrollDirection } = useScroll()
+  const { title, description } = useSiteMetadata();
+  const { scrollY, scrollDirection } = useScroll();
 
   return (
     <div className="bg-white">
@@ -46,7 +48,7 @@ const Layout = ({ children }) => {
         </div>
       ) : null}
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;
