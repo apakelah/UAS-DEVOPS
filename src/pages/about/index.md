@@ -4,7 +4,7 @@ title: Tentang Kami
 heading: Tentang SMK Daarussaadah Kota Tangerang
 subheading: Visi Misi, Prestasi, Kegiatan dan Jurusan
 team:
-  - name: Prestasi Siswa
+  - name: Prestasi Siswa.
     image: /img/img_2393.jpg
     title: SMK Daarussaadah Kota Tangerang
   - name: Kegiatan Siswa
