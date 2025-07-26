@@ -1,108 +1,109 @@
-const path = require("path")
-const { createFilePath } = require(`gatsby-source-filesystem`)
+const path = require("path");
+const { createFilePath } = require("gatsby-source-filesystem");
 
-exports.createPages = ({ graphql, actions }) => {
-  const { createPage } = actions
+// CREATE PAGES
+exports.createPages = async ({ graphql, actions, reporter }) => {
+  const { createPage } = actions;
 
-  return new Promise((resolve, reject) => {
-    resolve(
-      graphql(
-        `
-          query {
-            allMarkdownRemark(
-              sort: { order: DESC, fields: [frontmatter___date] }
-            ) {
-              edges {
-                node {
-                  id
-                  fields {
-                    slug
-                  }
-                  frontmatter {
-                    templateKey
-                  }
-                }
-                next {
-                  fields {
-                    slug
-                  }
-                  frontmatter {
-                    title
-                    templateKey
-                    location
-                  }
-                }
-                previous {
-                  fields {
-                    slug
-                  }
-                  frontmatter {
-                    title
-                    templateKey
-                    location
-                  }
-                }
-              }
+  const result = await graphql(`
+    query {
+      allMarkdownRemark(
+        sort: { order: DESC, fields: [frontmatter___date] }
+      ) {
+        edges {
+          node {
+            id
+            fields {
+              slug
+            }
+            frontmatter {
+              templateKey
             }
           }
-        `
-      ).then(result => {
-        if (result.errors) {
-          result.errors.forEach(e => console.error(e.toString()))
-          return Promise.reject(result.errors)
+          next {
+            fields {
+              slug
+            }
+            frontmatter {
+              title
+              templateKey
+              location
+            }
+          }
+          previous {
+            fields {
+              slug
+            }
+            frontmatter {
+              title
+              templateKey
+              location
+            }
+          }
         }
+      }
+    }
+  `);
 
-        const { edges } = result.data.allMarkdownRemark
+  if (result.errors) {
+    reporter.panicOnBuild("❌ Error while running GraphQL query.");
+    return;
+  }
 
-        edges.forEach(({ node, next, previous }) => {
-          const id = node.id
-          createPage({
-            path: node.fields.slug,
-            // tags: edge.node.frontmatter.tags,
-            component: path.resolve(
-              `src/templates/${String(node.frontmatter.templateKey)}.js`
-            ),
-            // additional data can be passed via context
-            context: {
-              id,
-              next,
-              previous,
-            },
-          })
-        })
-      })
-    )
-  })
-}
+  const posts = result.data.allMarkdownRemark.edges;
 
+  posts.forEach(({ node, next, previous }) => {
+    createPage({
+      path: node.fields.slug,
+      component: path.resolve(
+        `src/templates/${String(node.frontmatter.templateKey)}.js`
+      ),
+      context: {
+        id: node.id,
+        next,
+        previous,
+      },
+    });
+  });
+};
+
+// CREATE SLUG FIELD
 exports.onCreateNode = ({ node, getNode, actions }) => {
-  const { createNodeField } = actions
-  if (node.internal.type === `MarkdownRemark`) {
-    const slug = createFilePath({ node, getNode, basePath: `pages` })
+  const { createNodeField } = actions;
+
+  if (node.internal.type === "MarkdownRemark") {
+    const slug = createFilePath({ node, getNode, basePath: "pages" });
+
     createNodeField({
       node,
-      name: `slug`,
+      name: "slug",
       value: slug,
-    })
+    });
   }
-}
+};
 
+// SCHEMA CUSTOMIZATION
 exports.createSchemaCustomization = ({ actions }) => {
-  const {createTypes} = actions
+  const { createTypes } = actions;
+
   const typeDefs = `
     type MarkdownRemark implements Node {
       frontmatter: Frontmatter
     }
 
     type Frontmatter {
+      templateKey: String
+      title: String
+      date: Date @dateformat
+      location: String
       office: Office
     }
 
     type Office {
-      address: String @md
-      phone: String @md
+      address: String
+      phone: String
     }
-  `
-  createTypes(typeDefs)
-}
+  `;
 
+  createTypes(typeDefs);
+};

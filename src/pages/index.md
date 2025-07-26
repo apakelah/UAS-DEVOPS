@@ -14,5 +14,5 @@ about:
     alt: Para siswa SMK Daarussa'adah kegiatan kelas industri
   button:
     url: /about
-    label: Mengetahui lebih lanjut
+    label: Mengetahui lebih lanjut.
 ---

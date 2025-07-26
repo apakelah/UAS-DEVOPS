@@ -21,7 +21,7 @@ function ContactPage({ data }) {
 
 export default ContactPage
 
-export const contactPageQuery = graphql`
+export const PageQuery = graphql`
   query ContactPage($id: String!) {
     markdownRemark(id: { eq: $id }) {
       frontmatter {
@@ -31,12 +31,8 @@ export const contactPageQuery = graphql`
         office {
           tagline
           location
-          address {
-            html
-          }
-          phone {
-            html
-          }
+          address
+          phone
           image {
             childImageSharp {
               gatsbyImageData(width: 640, placeholder: BLURRED)

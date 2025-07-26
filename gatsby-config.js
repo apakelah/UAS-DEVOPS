@@ -1,16 +1,15 @@
-const siteUrl =
-  process.env.URL || `https://smk-daarussaadah.sch.id/`
+require('events').EventEmitter.defaultMaxListeners = 20;
+
+const siteUrl = process.env.URL || `https://smk-daarussaadah.sch.id/`;
 
 module.exports = {
   siteMetadata: {
     title: "SMK Daarus Saadah",
-    description:
-      "Official Website SMK Daarussaadah Kota Tangerang",
-    siteUrl: "https://smk-daarussaadah.sch.id/",
+    description: "Official Website SMK Daarussaadah Kota Tangerang",
+    siteUrl: siteUrl,
   },
   plugins: [
     {
-      // keep as first gatsby-source-filesystem plugin for gatsby image support
       resolve: "gatsby-source-filesystem",
       options: {
         path: `${__dirname}/static/img`,
@@ -44,7 +43,6 @@ module.exports = {
       resolve: "gatsby-transformer-remark",
       options: {
         plugins: [
-          // gatsby-remark-relative-images must go before gatsby-remark-images
           {
             resolve: "gatsby-remark-relative-images",
             options: {
@@ -54,9 +52,6 @@ module.exports = {
           {
             resolve: "gatsby-remark-images",
             options: {
-              // It's important to specify the maxWidth (in pixels) of
-              // the content container as this plugin uses this as the
-              // base for generating different widths of each image.
               maxWidth: 2048,
             },
           },
@@ -85,10 +80,6 @@ module.exports = {
     {
       resolve: `gatsby-plugin-netlify-cms`,
       options: {
-        /**
-         * One convention is to place your Netlify CMS customization code in a
-         * `src/cms` directory.
-         */
         modulePath: `${__dirname}/src/cms/cms.js`,
       },
     },
@@ -108,4 +99,4 @@ module.exports = {
       },
     },
   ],
-}
+};
